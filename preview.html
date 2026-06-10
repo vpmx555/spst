@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bác Hồ Đã Làm Gì Hôm Nay?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ═══════════ TOKENS ═══════════ */
+:root{
+  --ink:#0e1a0f; --ink-light:#2a3d2c;
+  --gold:#c8902a; --gold-light:#e8b04a;
+  --cream:#f5f0e8; --cream-dark:#ede5d5;
+  --sage:#3d6b42; --sage-light:#5a8f60; --sage-muted:#c2d9c5;
+  --coral:#8b2020; --text-body:#2c3e2d; --text-muted:#6b7f6c;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-body);line-height:1.7;overflow-x:hidden}
+
+/* ═══════════ NAV ═══════════ */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:1rem 2rem;background:rgba(14,26,15,.94);backdrop-filter:blur(14px);border-bottom:1px solid rgba(200,144,42,.22)}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:600;color:var(--gold-light);letter-spacing:.04em}
+.nav-links{display:flex;gap:1.75rem}
+.nav-links a{text-decoration:none;font-size:.78rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:rgba(245,240,232,.5);transition:color .2s}
+.nav-links a:hover,.nav-links a.active{color:var(--gold-light)}
+/* mobile hamburger */
+.nav-toggle{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
+.nav-toggle span{width:22px;height:2px;background:rgba(245,240,232,.6);border-radius:2px;transition:all .3s}
+.mobile-menu{display:none;position:fixed;top:65px;left:0;right:0;background:rgba(14,26,15,.97);padding:1.5rem 2rem;z-index:199;border-bottom:1px solid rgba(200,144,42,.2)}
+.mobile-menu a{display:block;color:rgba(245,240,232,.7);text-decoration:none;font-size:.95rem;padding:.625rem 0;border-bottom:1px solid rgba(255,255,255,.06);letter-spacing:.04em}
+.mobile-menu a:last-child{border-bottom:none}
+.mobile-menu.open{display:block}
+
+/* ═══════════ HERO ═══════════ */
+.hero{min-height:100vh;background:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:8rem 2rem 5rem;position:relative;overflow:hidden}
+.hero-grain{position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");pointer-events:none}
+.hc1{position:absolute;width:600px;height:600px;top:-200px;right:-150px;border-radius:50%;background:radial-gradient(circle,rgba(61,107,66,.18) 0%,transparent 70%);pointer-events:none}
+.hc2{position:absolute;width:400px;height:400px;bottom:-100px;left:-100px;border-radius:50%;background:radial-gradient(circle,rgba(200,144,42,.1) 0%,transparent 70%);pointer-events:none}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:.5rem;font-size:.7rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(200,144,42,.35);padding:.35rem 1rem;border-radius:20px;margin-bottom:2rem;animation:fadeUp .8s ease both}
+.hero-eyebrow::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--gold)}
+.hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(3rem,8vw,6rem);font-weight:700;line-height:1.05;color:var(--cream);margin-bottom:1.5rem;animation:fadeUp .8s .15s ease both}
+.hero h1 em{color:var(--gold-light);font-style:italic;display:block}
+.hero-sub{font-size:1rem;font-weight:300;color:rgba(245,240,232,.55);max-width:520px;margin:0 auto 3rem;animation:fadeUp .8s .3s ease both}
+.hero-cta{display:inline-flex;align-items:center;gap:.75rem;padding:.85rem 2rem;background:var(--sage);color:var(--cream);border:none;border-radius:4px;font-family:'DM Sans',sans-serif;font-size:.85rem;font-weight:500;letter-spacing:.04em;cursor:pointer;text-decoration:none;transition:background .2s,transform .15s;animation:fadeUp .8s .45s ease both}
+.hero-cta:hover{background:var(--sage-light);transform:translateY(-2px)}
+.hero-cta svg{width:16px;height:16px}
+.hero-scroll{position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:.5rem;font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(245,240,232,.3);animation:fadeIn 1.5s 1s ease both}
+.scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,rgba(200,144,42,.6),transparent);animation:scrollPulse 2s infinite}
+
+/* ═══════════ PROGRESS BAR ═══════════ */
+.progress-section{background:var(--ink-light);padding:1.25rem 2rem;display:flex;align-items:center;justify-content:center;gap:2rem;flex-wrap:wrap;position:sticky;top:65px;z-index:90;border-bottom:1px solid rgba(200,144,42,.2)}
+.prog-dots{display:flex;gap:6px}
+.prog-dot{width:28px;height:3px;border-radius:2px;background:rgba(245,240,232,.15);transition:background .4s}
+.prog-dot.done{background:var(--gold)}
+.prog-label{font-size:.8rem;color:rgba(245,240,232,.45)}
+.prog-label span{color:var(--gold-light);font-weight:500}
+
+/* ═══════════ SECTION COMMON ═══════════ */
+.section-wrap{max-width:860px;margin:0 auto;padding:5rem 2rem}
+.section-title{font-family:'Cormorant Garamond',serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;color:var(--ink);margin-bottom:.5rem;line-height:1.2}
+.section-sub{font-size:.9rem;color:var(--text-muted);margin-bottom:3rem}
+.gold-rule{width:48px;height:2px;background:var(--gold);margin-bottom:1rem}
+
+/* ═══════════ TIMELINE ═══════════ */
+.tl-image {width: 100%- 24px; height: 340px; overflow: hidden; border-radius: 12px; margin:12px;}
+.tl-image img {width: 100%; height: 100%; object-fit: cover; transition: 0.4s;}
+.tl-image {display: none;}
+.tl-item.active .tl-image {display: block;}
+#timeline{background:var(--cream)}
+.tl-container{position:relative}
+.tl-line{position:absolute;left:22px;top:8px;bottom:8px;width:1px;background:var(--sage-muted)}
+.tl-item{position:relative;padding-left:60px;margin-bottom:1.25rem}
+.tl-dot-wrap{position:absolute;left:0;top:18px;display:flex;align-items:center;justify-content:center;width:44px;height:44px}
+.tl-dot{width:14px;height:14px;border-radius:50%;border:2px solid var(--sage-muted);background:var(--cream);transition:all .3s;cursor:pointer}
+.tl-item.active .tl-dot,.tl-item.seen .tl-dot{border-color:var(--gold);background:var(--gold);box-shadow:0 0 0 4px rgba(200,144,42,.15)}
+.tl-card{background:#fff;border:1px solid rgba(61,107,66,.15);border-radius:8px;overflow:hidden;cursor:pointer;transition:border-color .2s,box-shadow .2s}
+.tl-card:hover{border-color:rgba(200,144,42,.4);box-shadow:0 4px 20px rgba(0,0,0,.06)}
+.tl-item.active .tl-card{border-color:var(--gold);box-shadow:0 6px 28px rgba(0,0,0,.1)}
+.tl-head{display:flex;align-items:center;gap:1rem;padding:1.1rem 1.25rem}
+.tl-year-badge{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:700;color:var(--sage);min-width:56px;line-height:1;flex-shrink:0}
+.tl-head-text{flex:1}
+.tl-title-text{font-size:.95rem;font-weight:500;color:var(--ink);line-height:1.35;margin-bottom:2px}
+.tl-preview{font-size:.78rem;color:var(--text-muted)}
+.tl-chevron{width:20px;height:20px;flex-shrink:0;color:var(--text-muted);transition:transform .3s}
+.tl-item.active .tl-chevron{transform:rotate(180deg)}
+.tl-body{display:none;border-top:1px solid rgba(61,107,66,.1);padding:1.25rem}
+.tl-item.active .tl-body{display:block;animation:fadeBody .25s ease}
+.virtue-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1rem}
+.vtag{display:inline-flex;align-items:center;gap:4px;font-size:.7rem;font-weight:500;letter-spacing:.04em;padding:3px 10px;border-radius:20px}
+.vtag-green{background:#e6f4e8;color:#2a6b32}
+.vtag-gold{background:#faf0dc;color:#7a5010}
+.vtag-blue{background:#e4eef9;color:#1a4e8a}
+.story-text{font-size:.88rem;color:var(--text-body);line-height:1.8;margin-bottom:1rem}
+.pull-quote{border-left:3px solid var(--gold);padding:.875rem 1.125rem;margin:1rem 0;background:#faf8f3;border-radius:0 6px 6px 0;font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-style:italic;color:var(--ink);line-height:1.6}
+.pull-quote cite{display:block;margin-top:.5rem;font-family:'DM Sans',sans-serif;font-size:.72rem;font-style:normal;color:var(--text-muted);letter-spacing:.04em}
+.reflect-block{background:#fdf7ec;border:1px solid rgba(200,144,42,.25);border-radius:6px;padding:1rem 1.125rem;margin-top:1rem}
+.reflect-label{font-size:.68rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.625rem;display:flex;align-items:center;gap:.4rem}
+.reflect-label::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--gold)}
+.reflect-q{font-size:.85rem;color:#5a4010;line-height:1.65;margin-bottom:.75rem}
+.reflect-textarea{width:100%;padding:.625rem .875rem;border:1px solid rgba(200,144,42,.3);border-radius:4px;background:rgba(255,255,255,.7);font-family:'DM Sans',sans-serif;font-size:.83rem;color:var(--ink);resize:none;min-height:72px;transition:border-color .2s}
+.reflect-textarea:focus{outline:none;border-color:var(--gold)}
+.save-btn{margin-top:.625rem;padding:.45rem 1.1rem;background:var(--sage);color:#fff;border:none;border-radius:4px;font-family:'DM Sans',sans-serif;font-size:.78rem;cursor:pointer;transition:background .2s}
+.save-btn:hover{background:var(--sage-light)}
+.save-btn.saved{background:var(--gold)}
+
+/* ═══════════ VIRTUE CARDS (flip) ═══════════ */
+#virtues{background:var(--cream-dark)}
+.virtue-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:1rem}
+.vcard{height:220px;perspective:1000px;cursor:pointer}
+.vcard-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .55s cubic-bezier(.4,0,.2,1)}
+.vcard:hover .vcard-inner,.vcard.flipped .vcard-inner{transform:rotateY(180deg)}
+.vcard-front,.vcard-back{position:absolute;inset:0;border-radius:10px;backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem;text-align:center}
+.vcard-front{background:#fff;border:1px solid rgba(61,107,66,.15)}
+.vcard-back{background:var(--ink);border:1px solid rgba(200,144,42,.3);transform:rotateY(180deg)}
+.vcard-icon{font-size:2.2rem;margin-bottom:.75rem}
+.vcard-name{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:700;color:var(--ink);margin-bottom:.25rem}
+.vcard-hint{font-size:.72rem;color:var(--text-muted);letter-spacing:.06em}
+.vcard-def{font-size:.83rem;color:rgba(245,240,232,.8);line-height:1.65}
+.vcard-quote{font-size:.75rem;color:var(--gold-light);font-style:italic;margin-top:.875rem;line-height:1.5}
+
+/* ═══════════ SITUATIONS (Nêu vấn đề) ═══════════ */
+#situations{background:#fff}
+.sit-grid{display:grid;grid-template-columns:1fr;gap:1.25rem}
+.sit-card{border:1px solid rgba(61,107,66,.15);border-radius:10px;overflow:hidden;background:#fff;transition:box-shadow .2s}
+.sit-card:hover{box-shadow:0 6px 24px rgba(0,0,0,.08)}
+.sit-header{display:flex;align-items:flex-start;gap:1rem;padding:1.125rem 1.25rem;border-bottom:1px solid rgba(0,0,0,.06)}
+.sit-num{flex-shrink:0;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:500}
+.sn-red{background:#fceaea;color:#7a1f1f}
+.sn-amber{background:#faeeda;color:#7a5010}
+.sn-green{background:#e6f4e8;color:#2a6b32}
+.sit-title{font-size:.93rem;font-weight:500;color:var(--ink);line-height:1.35;margin-bottom:2px}
+.sit-type{font-size:.74rem;color:var(--text-muted)}
+.sit-body{padding:1.125rem 1.25rem}
+.sit-story{font-size:.86rem;color:var(--text-body);line-height:1.75;margin-bottom:1rem}
+.sit-question{background:#f0f8f1;border-left:3px solid var(--sage);border-radius:0 6px 6px 0;padding:.875rem 1rem;margin-bottom:.875rem}
+.sq-label{font-size:.68rem;font-weight:500;text-transform:uppercase;letter-spacing:.1em;color:var(--sage);margin-bottom:.4rem}
+.sq-text{font-size:.83rem;color:#1f3d22;line-height:1.6}
+.analyze-btn{display:inline-flex;align-items:center;gap:.4rem;padding:.45rem 1rem;border:1px solid rgba(61,107,66,.3);border-radius:4px;background:transparent;font-family:'DM Sans',sans-serif;font-size:.78rem;color:var(--sage);cursor:pointer;transition:all .18s}
+.analyze-btn:hover{background:var(--sage);color:#fff;border-color:var(--sage)}
+.sit-answer{display:none;margin-top:.875rem;background:#fdf7ec;border:1px solid rgba(200,144,42,.25);border-radius:6px;padding:.875rem 1rem;animation:fadeBody .25s ease}
+.sit-answer.show{display:block}
+.sa-label{font-size:.68rem;font-weight:500;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);margin-bottom:.5rem}
+.sa-text{font-size:.83rem;color:#5a4010;line-height:1.65}
+
+/* ═══════════ QUIZ ═══════════ */
+#quiz{background:var(--ink)}
+#quiz .section-title{color:var(--cream)}
+#quiz .section-sub{color:rgba(245,240,232,.45)}
+.quiz-card{background:rgba(255,255,255,.04);border:1px solid rgba(200,144,42,.2);border-radius:10px;padding:1.5rem;margin-bottom:1rem}
+.quiz-num{font-size:.7rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.625rem}
+.quiz-q{font-size:.95rem;color:var(--cream);line-height:1.55;margin-bottom:1rem;font-weight:400}
+.quiz-options{display:grid;gap:.5rem}
+.quiz-opt{display:block;width:100%;text-align:left;padding:.65rem 1rem;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:6px;font-family:'DM Sans',sans-serif;font-size:.84rem;color:rgba(245,240,232,.75);cursor:pointer;transition:all .18s}
+.quiz-opt:hover:not(:disabled){background:rgba(200,144,42,.12);border-color:rgba(200,144,42,.35);color:var(--cream)}
+.quiz-opt.correct{background:rgba(61,107,66,.3);border-color:#5a8f60;color:#a8e6b0}
+.quiz-opt.wrong{background:rgba(139,32,32,.25);border-color:#8b2020;color:#f0a0a0}
+.quiz-feedback{margin-top:.875rem;font-size:.83rem;line-height:1.6;padding:.75rem 1rem;border-radius:6px;display:none}
+.quiz-feedback.show{display:block}
+.qf-correct{background:rgba(61,107,66,.15);color:#a8e6b0;border:1px solid rgba(90,143,96,.25)}
+.qf-wrong{background:rgba(139,32,32,.15);color:#f0a0a0;border:1px solid rgba(139,32,32,.25)}
+.quiz-score{text-align:center;padding:2rem 1rem;display:none}
+.quiz-score.show{display:block}
+.qs-num{font-family:'Cormorant Garamond',serif;font-size:4rem;font-weight:700;color:var(--gold-light);line-height:1}
+.qs-label{font-size:.9rem;color:rgba(245,240,232,.6);margin-top:.5rem}
+.qs-msg{font-size:1rem;color:var(--cream);margin-top:1rem;line-height:1.6}
+.quiz-restart{margin-top:1.5rem;padding:.7rem 1.75rem;background:var(--sage);color:#fff;border:none;border-radius:4px;font-family:'DM Sans',sans-serif;font-size:.85rem;cursor:pointer;transition:background .2s}
+.quiz-restart:hover{background:var(--sage-light)}
+
+/* ═══════════ MIRROR ═══════════ */
+#mirror{background:var(--ink-light)}
+#mirror .section-title{color:var(--cream)}
+#mirror .section-sub{color:rgba(245,240,232,.45)}
+.mirror-grid{display:grid;grid-template-columns:1fr;gap:1rem}
+.mirror-card{border:1px solid rgba(200,144,42,.2);border-radius:8px;overflow:hidden}
+.mirror-card-head{display:flex;align-items:center;gap:.875rem;padding:1rem 1.25rem;background:rgba(255,255,255,.04);border-bottom:1px solid rgba(200,144,42,.15)}
+.mirror-icon{width:36px;height:36px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.mi-gold{background:rgba(200,144,42,.15)}
+.mi-sage{background:rgba(61,107,66,.2)}
+.mi-coral{background:rgba(139,32,32,.15)}
+.mirror-card-title{font-size:.9rem;font-weight:500;color:var(--cream)}
+.mirror-card-sub{font-size:.74rem;color:rgba(245,240,232,.4)}
+.compare-cols{display:grid;grid-template-columns:1fr 1fr}
+.compare-side{padding:1rem 1.125rem;font-size:.82rem;line-height:1.65}
+.cs-label{font-size:.65rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.5rem}
+.cs-bac{background:rgba(61,107,66,.1);color:rgba(245,240,232,.75);border-right:1px solid rgba(200,144,42,.1)}
+.cs-bac .cs-label{color:#6fcf8a}
+.cs-now{background:rgba(255,255,255,.03);color:rgba(245,240,232,.55)}
+.cs-now .cs-label{color:#f0a070}
+
+/* ═══════════ PLEDGE ═══════════ */
+#pledge{background:var(--cream-dark)}
+.pledge-intro{font-size:.9rem;color:var(--text-muted);margin-bottom:2rem;line-height:1.75}
+.pledge-pills{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.5rem}
+.pledge-pill{display:inline-flex;align-items:center;gap:.4rem;padding:.5rem 1.1rem;border:1px solid rgba(61,107,66,.3);border-radius:24px;background:#fff;font-family:'DM Sans',sans-serif;font-size:.82rem;color:var(--text-body);cursor:pointer;transition:all .2s}
+.pledge-pill:hover{border-color:var(--sage);background:#e8f2ea}
+.pledge-pill.chosen{background:var(--sage);color:#fff;border-color:var(--sage)}
+.pledge-result{display:none;background:#fff;border:1px solid rgba(61,107,66,.25);border-left:3px solid var(--sage);border-radius:0 8px 8px 0;padding:1.25rem 1.5rem;animation:fadeUp .3s ease}
+.pledge-result.show{display:block}
+.pledge-result p{font-size:.9rem;color:var(--text-body);line-height:1.75}
+.pledge-result strong{color:var(--sage)}
+.share-row{margin-top:1.25rem;display:flex;gap:.625rem;flex-wrap:wrap}
+.share-btn{display:inline-flex;align-items:center;gap:.4rem;padding:.45rem 1rem;border:1px solid rgba(61,107,66,.3);border-radius:4px;background:transparent;font-family:'DM Sans',sans-serif;font-size:.78rem;color:var(--sage);cursor:pointer;transition:all .18s}
+.share-btn:hover{background:var(--sage);color:#fff;border-color:var(--sage)}
+
+/* ═══════════ FOOTER ═══════════ */
+footer{background:var(--ink);padding:3rem 2rem;text-align:center;border-top:1px solid rgba(200,144,42,.2)}
+.footer-logo{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:600;color:var(--gold-light);margin-bottom:.5rem}
+.footer-links{display:flex;justify-content:center;gap:2rem;margin:.875rem 0}
+.footer-links a{text-decoration:none;font-size:.75rem;color:rgba(245,240,232,.3);letter-spacing:.06em;text-transform:uppercase;transition:color .2s}
+.footer-links a:hover{color:var(--gold-light)}
+.footer-sub{font-size:.72rem;color:rgba(245,240,232,.2);letter-spacing:.04em}
+
+/* ═══════════ ANIMATIONS ═══════════ */
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes fadeBody{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+@keyframes scrollPulse{0%,100%{opacity:.3}50%{opacity:1}}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+/* ═══════════ RESPONSIVE ═══════════ */
+@media(max-width:640px){
+  nav{padding:.875rem 1.25rem}
+  .nav-links{display:none}
+  .nav-toggle{display:flex}
+  .hero{padding:6rem 1.25rem 4rem}
+  .section-wrap{padding:3.5rem 1.25rem}
+  .compare-cols{grid-template-columns:1fr}
+  .cs-bac{border-right:none;border-bottom:1px solid rgba(200,144,42,.1)}
+  .virtue-grid{grid-template-columns:repeat(2,1fr)}
+  .vcard{height:200px}
+  .progress-section{gap:1rem;padding:1rem 1.25rem}
+  .tl-year-badge{font-size:1.2rem;min-width:44px}
+}
+@media(max-width:380px){
+  .virtue-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════ NAV ══════════ -->
+<nav>
+  <div class="nav-logo">Bác Hồ · Đạo Đức Cách Mạng</div>
+  <div class="nav-links">
+    <a href="#timeline">Timeline</a>
+    <a href="#virtues">Chuẩn mực</a>
+    <a href="#situations">Tình huống</a>
+    <a href="#quiz">Kiểm tra</a>
+    <a href="#mirror">Phản chiếu</a>
+    <a href="#pledge">Cam kết</a>
+  </div>
+  <div class="nav-toggle" id="navToggle" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#timeline" onclick="toggleMenu()">Timeline lịch sử</a>
+  <a href="#virtues" onclick="toggleMenu()">Chuẩn mực đạo đức</a>
+  <a href="#situations" onclick="toggleMenu()">Tình huống thực tế</a>
+  <a href="#quiz" onclick="toggleMenu()">Kiểm tra hiểu biết</a>
+  <a href="#mirror" onclick="toggleMenu()">Phản chiếu FPT</a>
+  <a href="#pledge" onclick="toggleMenu()">Cam kết bản thân</a>
+</div>
+
+<!-- ══════════ HERO ══════════ -->
+<section class="hero">
+  <div class="hero-grain"></div>
+  <div class="hc1"></div>
+  <div class="hc2"></div>
+  <div class="hero-eyebrow">Tư tưởng Hồ Chí Minh · FPT University</div>
+  <h1>Bác Hồ đã làm gì<em>hôm nay?</em></h1>
+  <p class="hero-sub">Mỗi khoảnh khắc lịch sử, một hành động thật của Người.<br>Mỗi hành động, một câu hỏi cho bạn — sinh viên sống ở thế kỷ 21.</p>
+  <a href="#timeline" class="hero-cta">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+    Khám phá timeline
+  </a>
+  <div class="hero-scroll"><div class="scroll-line"></div>cuộn xuống</div>
+</section>
+
+<!-- ══════════ PROGRESS ══════════ -->
+<div class="progress-section" id="progressBar">
+  <div class="prog-dots" id="progDots"></div>
+  <div class="prog-label" id="progLabel">Chọn một sự kiện bên dưới để bắt đầu</div>
+</div>
+
+<!-- ══════════ TIMELINE ══════════ -->
+<section id="timeline">
+  <div class="section-wrap">
+    <div class="gold-rule reveal"></div>
+    <h2 class="section-title reveal">5 khoảnh khắc định hình<br>đạo đức cách mạng</h2>
+    <p class="section-sub reveal">Nhấn vào từng sự kiện để đọc câu chuyện và ghi suy nghĩ của bạn.</p>
+    <div class="tl-container" id="tlContainer"></div>
+  </div>
+</section>
+
+<!-- ══════════ VIRTUE CARDS ══════════ -->
+<section id="virtues">
+  <div class="section-wrap">
+    <div class="gold-rule reveal"></div>
+    <h2 class="section-title reveal">Bốn chuẩn mực đạo đức cách mạng</h2>
+    <p class="section-sub reveal">Lật thẻ để xem định nghĩa và lời Bác — nhấn hoặc hover vào từng thẻ.</p>
+    <div class="virtue-grid" id="virtueGrid"></div>
+  </div>
+</section>
+
+<!-- ══════════ SITUATIONS ══════════ -->
+<section id="situations">
+  <div class="section-wrap">
+    <div class="gold-rule reveal"></div>
+    <h2 class="section-title reveal">Tình huống thực tế<br>để phân tích</h2>
+    <p class="section-sub reveal">Đặt mình vào từng tình huống. Nhấn "Xem phân tích" để đối chiếu với tư tưởng Hồ Chí Minh.</p>
+    <div class="sit-grid" id="sitGrid"></div>
+  </div>
+</section>
+
+<!-- ══════════ QUIZ ══════════ -->
+<section id="quiz">
+  <div class="section-wrap">
+    <div class="gold-rule reveal" style="background:var(--gold)"></div>
+    <h2 class="section-title reveal">Kiểm tra hiểu biết</h2>
+    <p class="section-sub reveal">5 câu hỏi — mỗi câu đúng +1 điểm. Hoàn thành để xem điểm của bạn.</p>
+    <div id="quizContainer"></div>
+    <div class="quiz-score" id="quizScore">
+      <div class="qs-num" id="qsNum">0/5</div>
+      <div class="qs-label">điểm</div>
+      <div class="qs-msg" id="qsMsg"></div>
+      <button class="quiz-restart" onclick="restartQuiz()">Làm lại</button>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ MIRROR ══════════ -->
+<section id="mirror">
+  <div class="section-wrap">
+    <div class="gold-rule reveal" style="background:var(--gold)"></div>
+    <h2 class="section-title reveal">Bác thì vậy —<br>còn chúng ta thì sao?</h2>
+    <p class="section-sub reveal">Đối chiếu hành động của Người với thực tế đời sống sinh viên FPT 2024.</p>
+    <div class="mirror-grid" id="mirrorGrid"></div>
+  </div>
+</section>
+
+<!-- ══════════ PLEDGE ══════════ -->
+<section id="pledge">
+  <div class="section-wrap">
+    <div class="gold-rule reveal"></div>
+    <h2 class="section-title reveal">Cam kết của bạn</h2>
+    <p class="pledge-intro reveal">Sau khi đọc xong timeline này — bạn chọn thực hành điều gì trong học kỳ này?<br>Đạo đức không phải trên trời sa xuống. Nó bắt đầu từ một quyết định nhỏ, hôm nay.</p>
+    <div class="pledge-pills reveal" id="pledgePills"></div>
+    <div class="pledge-result" id="pledgeResult">
+      <p id="pledgeText"></p>
+      <div class="share-row">
+        <button class="share-btn" onclick="copyPledge()">📋 Sao chép cam kết</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ FOOTER ══════════ -->
+<footer>
+  <div class="footer-logo">Bác Hồ · Đạo Đức Cách Mạng</div>
+  <div class="footer-links">
+    <a href="#timeline">Timeline</a>
+    <a href="#virtues">Chuẩn mực</a>
+    <a href="#situations">Tình huống</a>
+    <a href="#quiz">Kiểm tra</a>
+    <a href="#pledge">Cam kết</a>
+  </div>
+  <p class="footer-sub">Sản phẩm sáng tạo môn Tư tưởng Hồ Chí Minh · FPT University · 2024</p>
+</footer>
+
+<script>
+/* ════════════════════════════════════
+   DATA
+════════════════════════════════════ */
+const events = [
+  {
+    "year": "1945",
+    "title": "Bác mặc áo vá lên đọc Tuyên ngôn Độc lập",
+    "preview": "Ngày trọng đại nhất — và bộ trang phục đơn giản nhất có thể.",
+    "image": "./bacho.png",
+    "tags": [
+      {
+        "label": "Kiệm",
+        "cls": "vtag-green"
+      },
+      {
+        "label": "Nói đi đôi với làm",
+        "cls": "vtag-blue"
+      }
+    ],
+    "story": "Ngày 2/9/1945, trước hàng triệu người tại Quảng trường Ba Đình, Hồ Chí Minh xuất hiện trong bộ kaki bạc màu đã vá. Nhiều cán bộ xung quanh mặc áo vest chỉnh tề. Người từ chối thay đồ mới: “Đồng bào ta còn nghèo, mình ăn mặc thế này là đủ.” Khoảnh khắc đó đi vào lịch sử không chỉ vì Tuyên ngôn — mà vì tấm gương.",
+    "quote": "“Trước mặt quần chúng, không phải ta cứ viết lên trán chữ ‘cộng sản’ mà ta được họ yêu mến. Quần chúng chỉ quý mến những người có tư cách, đạo đức.”",
+    "quoteSrc": "Hồ Chí Minh",
+    "reflectQ": "Lần cuối bạn flex outfit trên mạng là khi nào? Bạn làm vì bản thân hay vì người khác nhìn? Nếu Bác còn sống và thấy Instagram của bạn — Người sẽ hỏi gì?"
+  },
+  {
+    "year": "1947",
+    "title": "Bác viết “Sửa đổi lối làm việc”",
+    "preview": "Người đứng đầu đất nước tự viết sách chỉ ra lỗi lầm của chính mình.",
+    "tags": [
+      {
+        "label": "Chính",
+        "cls": "vtag-green"
+      },
+      {
+        "label": "Tự phê bình",
+        "cls": "vtag-blue"
+      }
+    ],
+    "story": "Giữa kháng chiến, Bác viết cuốn sách thẳng thắn chỉ ra 12 căn bệnh của cán bộ — bệnh quan liêu, địa phương, óc lãnh tụ... Điều đặc biệt: Người không ký tên thật mà ký “X.Y.Z” để tránh nể nang. Đây là hành động dũng cảm của lãnh tụ tối cao dám nói thật về cái xấu ngay trong hàng ngũ mình.",
+    "quote": "“Người cách mạng phải có đạo đức, không có đạo đức thì dù tài giỏi mấy cũng không lãnh đạo được nhân dân.”",
+    "quoteSrc": "Sửa đổi lối làm việc, 1947",
+    "reflectQ": "Khi nhóm làm sai, bạn có dám nói thật không? Hay chọn im lặng để giữ hoà khí? Bác ký tên giả để tránh áp lực xã hội — bạn có đang làm điều ngược lại: dùng nick ẩn danh để né trách nhiệm không?"
+  },
+  {
+    "year": "1952",
+    "title": "Bác trả lại toàn bộ quà biếu",
+    "preview": "Không nhận riêng bất cứ thứ gì, dù nhỏ đến đâu.",
+    "tags": [
+      {
+        "label": "Liêm",
+        "cls": "vtag-green"
+      },
+      {
+        "label": "Chí công vô tư",
+        "cls": "vtag-gold"
+      }
+    ],
+    "story": "Ở Việt Bắc, nhân dân khắp nơi gửi quà cho Bác — gà, gạo, mật ong, trứng. Người yêu cầu trả lại tất cả hoặc đưa vào bếp ăn tập thể. Một cụ già đi bộ mấy ngày mang gói chè — Bác nhận, pha mời cụ và mọi người cùng uống ngay, không giữ riêng. “Cái gì của dân thì phải trả về cho dân.”",
+    "quote": "“Quan liêu, tham ô, lãng phí là tội ác. Phải tẩy sạch nó để thực hiện cần kiệm liêm chính.”",
+    "quoteSrc": "Chống quan liêu, tham ô, lãng phí, 1952",
+    "reflectQ": "Bạn có bao giờ nhận “ưu ái nhỏ” — được copy bài, được cộng điểm không công bằng, được qua vòng vì quen biết — mà không thấy vấn đề? Bác từ chối gói chè. Bạn từ chối được điều gì?"
+  },
+  {
+    "year": "1958",
+    "title": "Bác viết “Đạo đức cách mạng”",
+    "preview": "Người cảnh báo: thời bình mới là lúc đạo đức dễ lung lay nhất.",
+    "tags": [
+      {
+        "label": "Tu dưỡng suốt đời",
+        "cls": "vtag-blue"
+      },
+      {
+        "label": "Xây đi đôi với chống",
+        "cls": "vtag-green"
+      }
+    ],
+    "story": "Sau khi miền Bắc được giải phóng và bước vào xây dựng hoà bình, Bác viết tác phẩm này như một lời cảnh báo: chiến thắng kẻ thù dễ hơn chiến thắng cái xấu trong chính mình. Người lo ngại nhất không phải bom đạn — mà lo cán bộ được quyền lực rồi quên mất dân.",
+    "quote": "“Đạo đức cách mạng không phải trên trời sa xuống. Nó do đấu tranh, rèn luyện bền bỉ hằng ngày mà phát triển và củng cố. Cũng như ngọc càng mài càng sáng, vàng càng luyện càng trong.”",
+    "quoteSrc": "Đạo đức cách mạng, 1958",
+    "reflectQ": "Hết năm 1 vào năm 2, bạn có thấy mình “thả lỏng” hơn không — deadline trễ hơn, ít đọc sách hơn, dễ dãi với bản thân hơn? “Ngọc càng mài càng sáng” — bạn đang mài hay đang để ngọc ố?"
+  },
+  {
+    "year": "1969",
+    "title": "Di chúc — lời cuối cùng của Người",
+    "preview": "Không nhắc đến công lao. Chỉ lo cho dân, cho Đảng, cho thế hệ sau.",
+    "tags": [
+      {
+        "label": "Trung với nước",
+        "cls": "vtag-gold"
+      },
+      {
+        "label": "Hiếu với dân",
+        "cls": "vtag-green"
+      }
+    ],
+    "story": "Trong Di chúc — văn bản cuối đời — Hồ Chí Minh dành nhiều trang viết về thanh niên và thế hệ kế tiếp hơn là về thành tích của bản thân. Người không xin lập tượng đài, không muốn tổ chức lễ tang lớn. Chỉ xin được hoả táng và tro rải lên đồi, nơi nhân dân có thể trồng cây.",
+    "quote": "“Đảng cần phải chăm lo giáo dục đạo đức cách mạng cho đoàn viên và thanh niên, đào tạo họ thành những người thừa kế xây dựng chủ nghĩa xã hội vừa ‘hồng’ vừa ‘chuyên’.”",
+    "quoteSrc": "Di chúc, 1969",
+    "reflectQ": "Nếu hôm nay là ngày cuối cùng của học kỳ này — bạn muốn người khác nhớ đến bạn là người như thế nào? Bạn đã sống theo điều đó chưa, hay chỉ nói?"
+  }
+];
+
+const virtues = [
+  {
+    "icon": "🏛",
+    "name": "Trung — Hiếu",
+    "hint": "Lật thẻ để xem",
+    "def": "Trung với nước, hiếu với dân. Phẩm chất bao trùm nhất — trung thành với Tổ quốc, hết lòng phục vụ nhân dân. Tuyệt đối không được “quan cách mạng” ra lệnh ra oai với dân.",
+    "quote": "Phải luôn luôn nâng cao chí khí cách mạng: trung với nước, hiếu với dân, nhiệm vụ nào cũng hoàn thành."
+  },
+  {
+    "icon": "⚖️",
+    "name": "Cần — Kiệm",
+    "hint": "Lật thẻ để xem",
+    "def": "Cần là siêng năng, lao động có kế hoạch. Kiệm là tiết kiệm sức lao động, thì giờ, tiền của — không xa xỉ, không phô trương hình thức.",
+    "quote": "Phải lấy kết quả thiết thực đã góp sức bao nhiêu cho sản xuất mà đo ý chí cách mạng của mình."
+  },
+  {
+    "icon": "🪔",
+    "name": "Liêm — Chính",
+    "hint": "Lật thẻ để xem",
+    "def": "Liêm là trong sạch, không tham địa vị, tiền tài, sung sướng. Chính là thẳng thắn, đứng đắn — không tà, đối với mình thì không tự kiêu.",
+    "quote": "Chữ Liêm phải đi đôi với chữ Kiệm. Cũng như chữ Kiệm phải đi đôi với chữ Cần."
+  },
+  {
+    "icon": "🌏",
+    "name": "Chí công vô tư",
+    "hint": "Lật thẻ để xem",
+    "def": "Hoàn toàn vì lợi ích chung, không vì tư lợi. Đặt lợi ích của Đảng, nhân dân, dân tộc lên trên hết. Chống chủ nghĩa cá nhân — nguồn gốc của mọi tệ nạn.",
+    "quote": "Đem lòng chí công vô tư mà đối với người, với việc."
+  }
+];
+
+const situations = [
+  {
+    "num": "01",
+    "numCls": "sn-red",
+    "title": "Ông Giám đốc và hợp đồng “ma”",
+    "type": "Tham nhũng · Lạm dụng quyền lực",
+    "story": "Ông A là Giám đốc Sở Xây dựng, từng được xem là cán bộ tận tụy thời trẻ. Sau nhiều năm thăng tiến, ông ký các hợp đồng thi công với doanh nghiệp sân sau của người thân, nâng khống giá trị công trình. Khi bị khởi tố, ông nói: “Tôi đã cống hiến cả đời, chỉ muốn lo cho gia đình lúc về già.”",
+    "question": "Theo tư tưởng Hồ Chí Minh, ông A đã vi phạm những phẩm chất nào trong bộ Cần — Kiệm — Liêm — Chính? Vì sao đây là biểu hiện của chủ nghĩa cá nhân?",
+    "answer": "Ông A vi phạm <strong>Liêm</strong> và <strong>Chí công vô tư</strong>, đồng thời để <strong>chủ nghĩa cá nhân</strong> chi phối các quyết định. Lợi ích gia đình đã được đặt cao hơn lợi ích nhân dân, nên hành vi trở thành tham nhũng và lạm quyền."
+  },
+  {
+    "num": "02",
+    "numCls": "sn-amber",
+    "title": "Bà Phó bí thư và bằng cấp giả",
+    "type": "Suy thoái đạo đức · Nói không đi đôi với làm",
+    "story": "Bà B là Phó Bí thư Huyện ủy, thường xuyên phát biểu về liêm chính và trung thực. Tuy nhiên, thanh tra phát hiện các bằng đại học và thạc sĩ của bà đều là bằng mua, không qua học tập thực sự, và bà dùng chúng để thăng tiến trong nhiều năm.",
+    "question": "Trường hợp bà B thể hiện điều ngược lại với nguyên tắc đạo đức nào? Theo Hồ Chí Minh, vì sao việc này làm xói mòn niềm tin của nhân dân?",
+    "answer": "Đây là biểu hiện của việc <strong>nói không đi đôi với làm</strong>, đồng thời vi phạm phẩm chất <strong>Chính</strong>. Khi cán bộ nói về trung thực nhưng lại gian dối, niềm tin của nhân dân bị tổn hại rất lớn."
+  },
+  {
+    "num": "03",
+    "numCls": "sn-green",
+    "title": "Ông Trưởng thôn từ chối phong bì",
+    "type": "Tấm gương đạo đức · Chí công vô tư",
+    "story": "Ông C là Trưởng thôn tại một xã miền núi. Một doanh nghiệp xây dựng đường thôn ngỏ ý 'cảm ơn' riêng một phong bì để được ưu ái thủ tục. Ông C từ chối, công khai mọi quyết định với dân và chỉ đạo sử dụng vật liệu đúng tiêu chuẩn.",
+    "question": "Điều gì tạo nên sự khác biệt giữa ông C và những trường hợp vi phạm đạo đức ở trên? Hành động này phản ánh phẩm chất nào của Bác Hồ?",
+    "answer": "Ông C thể hiện đầy đủ <strong>Liêm</strong> và <strong>Chí công vô tư</strong>. Ông đặt lợi ích của tập thể lên trên lợi ích cá nhân, đúng với tinh thần mà Hồ Chí Minh luôn nêu gương."
+  }
+];
+
+const quizData = [
+  {
+    "q": "Theo Hồ Chí Minh, đạo đức được ví như gì trong đời sống?",
+    "opts": [
+      "Ngọn đèn soi đường",
+      "Gốc của cây, nguồn của sông",
+      "Vũ khí của cách mạng",
+      "Nền tảng kinh tế"
+    ],
+    "ans": 1,
+    "explain": "Người viết: 'Cũng như sông thì có nguồn mới có nước, không có nguồn thì sông cạn. Cây phải có gốc, không có gốc thì cây héo. Người cách mạng phải có đạo đức.'"
+  },
+  {
+    "q": "Hồ Chí Minh xác định nguyên tắc quan trọng bậc nhất trong xây dựng đạo đức cách mạng là gì?",
+    "opts": [
+      "Tu dưỡng suốt đời",
+      "Xây đi đôi với chống",
+      "Nói đi đôi với làm, nêu gương về đạo đức",
+      "Học tập lý luận Mác-Lênin"
+    ],
+    "ans": 2,
+    "explain": "Nói đi đôi với làm là nguyên tắc quan trọng bậc nhất — sự thống nhất giữa lý luận và thực tiễn."
+  },
+  {
+    "q": "Theo Hồ Chí Minh, 'nguồn gốc của mọi tệ nạn' trong cán bộ là gì?",
+    "opts": [
+      "Thiếu trình độ văn hoá",
+      "Chủ nghĩa cá nhân",
+      "Cơ chế kiểm soát lỏng lẻo",
+      "Lương thấp, điều kiện khó khăn"
+    ],
+    "ans": 1,
+    "explain": "Trong tác phẩm 'Nâng cao đạo đức cách mạng, quét sạch chủ nghĩa cá nhân' (1969), Người khẳng định chủ nghĩa cá nhân là động cơ bên trong của mọi biểu hiện thoái hoá."
+  },
+  {
+    "q": "Câu nào sau đây ĐÚNG về phẩm chất 'Chính' trong tư tưởng Hồ Chí Minh?",
+    "opts": [
+      "Chính là không tham lam tiền bạc",
+      "Chính là đứng đắn, không tà — đối với mình không tự kiêu, đối với người không nịnh hót",
+      "Chính là chấp hành kỷ luật Đảng",
+      "Chính là có học vấn cao"
+    ],
+    "ans": 1,
+    "explain": "'Chính' nghĩa là thẳng thắn, đứng đắn. Người nhấn mạnh phải làm việc công lên trên việc tư."
+  },
+  {
+    "q": "Hồ Chí Minh viết 'Đạo đức cách mạng' vào năm nào và trong bối cảnh gì?",
+    "opts": [
+      "1945 — sau Cách mạng Tháng Tám",
+      "1947 — trong kháng chiến chống Pháp",
+      "1958 — khi miền Bắc bước vào xây dựng hoà bình",
+      "1969 — trong Di chúc cuối đời"
+    ],
+    "ans": 2,
+    "explain": "Tác phẩm 'Đạo đức cách mạng' viết năm 1958, khi miền Bắc bước vào xây dựng hoà bình."
+  }
+];
+
+const mirrors = [
+  {
+    "icon": "⏱",
+    "iconCls": "mi-gold",
+    "title": "Thì giờ: Bác không lãng phí một phút",
+    "sub": "Phẩm chất Cần · Đúng giờ · Kỷ luật bản thân",
+    "bac": "Dậy lúc 5–6 giờ sáng, chăm vườn, đọc sách, làm việc. 24 năm làm Chủ tịch nước — chưa bao giờ để ai phải chờ vì đến trễ.",
+    "now": "“Deadline 11:59 — submit lúc 11:58.” Vào lớp muộn 10 phút vì “không có xe”. TikTok 3 tiếng, học 30 phút. Ngủ 3 giờ sáng, ngủ bù đến trưa."
+  },
+  {
+    "icon": "💬",
+    "iconCls": "mi-sage",
+    "title": "Lời nói: Bác nói ít, làm nhiều",
+    "sub": "Nguyên tắc Nói đi đôi với làm",
+    "bac": "“Một tấm gương sống còn có giá trị hơn một trăm bài diễn văn.” Người viết ít, làm nhiều, không tự quảng bá bản thân.",
+    "now": "Post “em học 10 tiếng hôm nay” nhưng thật ra ngồi cafe với điện thoại. Hashtag #grinding trong khi tán gẫu. Story “hustle” nhưng GPA 1.8."
+  },
+  {
+    "icon": "🪙",
+    "iconCls": "mi-coral",
+    "title": "Vật chất: Bác từ chối gói chè",
+    "sub": "Phẩm chất Liêm · Không tham lam",
+    "bac": "Chủ tịch nước nhưng ở nhà sàn đơn sơ, mặc áo vá, không xe hơi riêng, không nhận quà cá nhân suốt 24 năm.",
+    "now": "Mượn note của bạn rồi không trả lời tin nhắn. Nhận ưu ái từ thầy cô quen biết. Claim credit cho ý tưởng của người khác trong nhóm."
+  }
+];
+
+const pledges = [
+  {
+    "icon": "⏰",
+    "label": "Đúng giờ",
+    "text": "đúng giờ trong mọi buổi học và họp nhóm"
+  },
+  {
+    "icon": "✍️",
+    "label": "Không gian lận",
+    "text": "không copy bài hoặc nhận lợi thế không công bằng"
+  },
+  {
+    "icon": "🗣",
+    "label": "Nói thật",
+    "text": "nói thật trong nhóm dù khó nghe"
+  },
+  {
+    "icon": "📵",
+    "label": "Focus học",
+    "text": "tắt điện thoại khi học ít nhất 1 tiếng mỗi ngày"
+  },
+  {
+    "icon": "🤝",
+    "label": "Công bằng nhóm",
+    "text": "ghi nhận công sức của từng thành viên trong nhóm"
+  }
+];
+/* ════════════════════════════════════
+   NAV MOBILE
+════════════════════════════════════ */
+function toggleMenu(){
+  document.getElementById("mobileMenu").classList.toggle("open");
+}
+// Highlight nav link on scroll
+window.addEventListener("scroll",()=>{
+  const secs=["timeline","virtues","situations","quiz","mirror","pledge"];
+  const links=document.querySelectorAll(".nav-links a");
+  let cur="";
+  secs.forEach(id=>{
+    const el=document.getElementById(id);
+    if(el&&window.scrollY>=el.offsetTop-120) cur=id;
+  });
+  links.forEach(a=>{
+    a.classList.toggle("active",a.getAttribute("href")==="#"+cur);
+  });
+});
+
+/* ════════════════════════════════════
+   TIMELINE
+════════════════════════════════════ */
+const openedSet=new Set();
+function buildTimeline(){
+  const dots = document.getElementById("progDots");
+  const container = document.getElementById("tlContainer");
+
+  events.forEach((_, i) => {
+    const d = document.createElement("div");
+    d.className = "prog-dot";
+    d.id = "pd" + i;
+    dots.appendChild(d);
+  });
+
+  const line = document.createElement("div");
+  line.className = "tl-line";
+  container.appendChild(line);
+
+  events.forEach((ev, i) => {
+    const item = document.createElement("div");
+    item.className = "tl-item reveal";
+    item.id = "tl" + i;
+
+    item.innerHTML = `
+      <div class="tl-dot-wrap"><div class="tl-dot"></div></div>
+
+      <div class="tl-card">
+        <div class="tl-head">
+          <div class="tl-year-badge">${ev.year}</div>
+          <div class="tl-head-text">
+            <div class="tl-title-text">${ev.title}</div>
+            <div class="tl-preview">${ev.preview}</div>
+          </div>
+          <svg class="tl-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+          </svg>
+        </div>
+
+        <div class="tl-image">
+          <img src="${ev.image}" alt="${ev.title}">
+        </div>
+
+        <div class="tl-body">
+          <div class="virtue-tags">
+            ${ev.tags.map(t => `<span class="vtag ${t.cls}">${t.label}</span>`).join("")}
+          </div>
+
+          <p class="story-text">${ev.story}</p>
+
+          <div class="pull-quote">
+            ${ev.quote}
+            <cite>— ${ev.quoteSrc}</cite>
+          </div>
+
+          <div class="reflect-block">
+            <div class="reflect-label">Góc nhìn FPT</div>
+            <p class="reflect-q">${ev.reflectQ}</p>
+            <textarea class="reflect-textarea" id="rt${i}" placeholder="Viết suy nghĩ của bạn ở đây..."></textarea><br>
+            <button class="save-btn" id="sb${i}" onclick="saveReflect(${i})">Lưu suy nghĩ</button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    item.querySelector(".tl-card").addEventListener("click", () => toggleTl(i));
+    container.appendChild(item);
+  });
+}
+function toggleTl(i){
+  const item=document.getElementById("tl"+i);
+  const was=item.classList.contains("active");
+  document.querySelectorAll(".tl-item").forEach(el=>el.classList.remove("active"));
+  if(!was){item.classList.add("active","seen");openedSet.add(i);}
+  updateProgress();
+}
+function updateProgress(){
+  const n=openedSet.size;
+  for(let i=0;i<events.length;i++) document.getElementById("pd"+i).classList.toggle("done",openedSet.has(i));
+  const lbl=document.getElementById("progLabel");
+  if(n===0) lbl.innerHTML="Chọn một sự kiện bên dưới để bắt đầu";
+  else if(n<events.length) lbl.innerHTML=`<span>${n}/${events.length}</span> khoảnh khắc đã khám phá`;
+  else lbl.innerHTML=`<span>Hoàn thành!</span> Hãy cuộn xuống để phản chiếu ↓`;
+}
+function saveReflect(i){
+  const ta=document.getElementById("rt"+i);
+  const btn=document.getElementById("sb"+i);
+  if(ta&&ta.value.trim()){btn.textContent="Đã lưu ✓";btn.classList.add("saved");btn.disabled=true;}
+}
+
+/* ════════════════════════════════════
+   VIRTUE CARDS
+════════════════════════════════════ */
+function buildVirtues(){
+  const grid=document.getElementById("virtueGrid");
+  virtues.forEach((v,i)=>{
+    const card=document.createElement("div");
+    card.className="vcard reveal";
+    card.innerHTML=`
+      <div class="vcard-inner">
+        <div class="vcard-front">
+          <div class="vcard-icon">${v.icon}</div>
+          <div class="vcard-name">${v.name}</div>
+          <div class="vcard-hint">↻ ${v.hint}</div>
+        </div>
+        <div class="vcard-back">
+          <div class="vcard-def">${v.def}</div>
+          <div class="vcard-quote">${v.quote}</div>
+        </div>
+      </div>`;
+    card.addEventListener("click",()=>card.classList.toggle("flipped"));
+    grid.appendChild(card);
+  });
+}
+
+/* ════════════════════════════════════
+   SITUATIONS
+════════════════════════════════════ */
+function buildSituations(){
+  const grid=document.getElementById("sitGrid");
+  situations.forEach((s,i)=>{
+    const card=document.createElement("div");
+    card.className="sit-card reveal";
+    card.innerHTML=`
+      <div class="sit-header">
+        <div class="sit-num ${s.numCls}">${s.num}</div>
+        <div>
+          <div class="sit-title">${s.title}</div>
+          <div class="sit-type">${s.type}</div>
+        </div>
+      </div>
+      <div class="sit-body">
+        <p class="sit-story">${s.story}</p>
+        <div class="sit-question">
+          <div class="sq-label">Câu hỏi phân tích</div>
+          <div class="sq-text">${s.question}</div>
+        </div>
+        <button class="analyze-btn" onclick="toggleAnswer(${i})">
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+          Xem phân tích
+        </button>
+        <div class="sit-answer" id="sa${i}">
+          <div class="sa-label">Phân tích từ tư tưởng Hồ Chí Minh</div>
+          <div class="sa-text">${s.answer}</div>
+        </div>
+      </div>`;
+    grid.appendChild(card);
+  });
+}
+function toggleAnswer(i){
+  const el=document.getElementById("sa"+i);
+  const btn=el.previousElementSibling;
+  const showing=el.classList.toggle("show");
+  btn.textContent=showing?"▲ Ẩn phân tích":"💡 Xem phân tích";
+}
+
+/* ════════════════════════════════════
+   QUIZ
+════════════════════════════════════ */
+let quizAnswered=[];
+function buildQuiz(){
+  const container=document.getElementById("quizContainer");
+  quizAnswered=new Array(quizData.length).fill(false);
+  container.innerHTML="";
+  quizData.forEach((q,qi)=>{
+    const card=document.createElement("div");
+    card.className="quiz-card reveal";
+    card.innerHTML=`
+      <div class="quiz-num">Câu ${qi+1}/${quizData.length}</div>
+      <div class="quiz-q">${q.q}</div>
+      <div class="quiz-options">
+        ${q.opts.map((o,oi)=>`<button class="quiz-opt" id="qo${qi}_${oi}" onclick="answerQuiz(${qi},${oi})">${String.fromCharCode(65+oi)}. ${o}</button>`).join("")}
+      </div>
+      <div class="quiz-feedback" id="qf${qi}"></div>`;
+    container.appendChild(card);
+  });
+}
+function answerQuiz(qi,chosen){
+  if(quizAnswered[qi]) return;
+  quizAnswered[qi]=true;
+  const q=quizData[qi];
+  const fb=document.getElementById("qf"+qi);
+  for(let i=0;i<q.opts.length;i++){
+    const btn=document.getElementById("qo"+qi+"_"+i);
+    btn.disabled=true;
+    if(i===q.ans) btn.classList.add("correct");
+    else if(i===chosen) btn.classList.add("wrong");
+  }
+  const correct=chosen===q.ans;
+  fb.className="quiz-feedback show "+(correct?"qf-correct":"qf-wrong");
+  fb.innerHTML=(correct?"✅ Đúng! ":"❌ Chưa đúng. ")+q.explain;
+  if(quizAnswered.every(Boolean)) setTimeout(showScore,800);
+}
+function showScore(){
+  const score=quizData.filter((q,i)=>{
+    for(let j=0;j<q.opts.length;j++){
+      const btn=document.getElementById("qo"+i+"_"+j);
+      if(btn&&btn.classList.contains("correct")&&!btn.classList.contains("wrong-selected")) return true;
+    }
+    return false;
+  }).length;
+  // count correct by checking feedback classes
+  let correct=0;
+  quizData.forEach((_,i)=>{
+    const fb=document.getElementById("qf"+i);
+    if(fb&&fb.classList.contains("qf-correct")) correct++;
+  });
+  const scoreEl=document.getElementById("quizScore");
+  document.getElementById("qsNum").textContent=correct+"/"+quizData.length;
+  let msg="";
+  if(correct===5) msg="Xuất sắc! Bạn đã nắm vững tư tưởng đạo đức Hồ Chí Minh. Bước tiếp theo là thực hành — không chỉ biết.";
+  else if(correct>=3) msg="Khá tốt! Hãy đọc lại các câu sai và liên hệ với câu chuyện trong timeline phía trên.";
+  else msg="Hãy cuộn lên đọc kỹ lại timeline và thẻ chuẩn mực — kiến thức cần được luyện tập, như 'ngọc càng mài càng sáng'.";
+  document.getElementById("qsMsg").textContent=msg;
+  scoreEl.classList.add("show");
+  document.getElementById("quizContainer").style.opacity=".35";
+}
+function restartQuiz(){
+  document.getElementById("quizScore").classList.remove("show");
+  document.getElementById("quizContainer").style.opacity="1";
+  buildQuiz();
+  setTimeout(()=>{
+    document.querySelectorAll("#quizContainer .reveal").forEach(el=>{
+      el.classList.add("visible");
+    });
+  },50);
+}
+
+/* ════════════════════════════════════
+   MIRROR
+════════════════════════════════════ */
+function buildMirror(){
+  const grid=document.getElementById("mirrorGrid");
+  mirrors.forEach(m=>{
+    const card=document.createElement("div");
+    card.className="mirror-card reveal";
+    card.innerHTML=`
+      <div class="mirror-card-head">
+        <div class="mirror-icon ${m.iconCls}">${m.icon}</div>
+        <div>
+          <div class="mirror-card-title">${m.title}</div>
+          <div class="mirror-card-sub">${m.sub}</div>
+        </div>
+      </div>
+      <div class="compare-cols">
+        <div class="compare-side cs-bac"><div class="cs-label">Bác Hồ</div>${m.bac}</div>
+        <div class="compare-side cs-now"><div class="cs-label">Sinh viên FPT 2024</div>${m.now}</div>
+      </div>`;
+    grid.appendChild(card);
+  });
+}
+
+/* ════════════════════════════════════
+   PLEDGE
+════════════════════════════════════ */
+let chosenPledgeText="";
+function buildPledge(){
+  const pillsEl=document.getElementById("pledgePills");
+  const result=document.getElementById("pledgeResult");
+  const pText=document.getElementById("pledgeText");
+  pledges.forEach(p=>{
+    const btn=document.createElement("button");
+    btn.className="pledge-pill";
+    btn.innerHTML=`${p.icon} ${p.label}`;
+    btn.addEventListener("click",()=>{
+      document.querySelectorAll(".pledge-pill").forEach(b=>b.classList.remove("chosen"));
+      btn.classList.add("chosen");
+      chosenPledgeText=`Học kỳ này, tôi cam kết thực hành ${p.text}.`;
+      pText.innerHTML=`Cam kết của bạn: Học kỳ này, tôi sẽ thực hành <strong>${p.text}</strong>.<br><br>Đây là điều Bác Hồ đã thực hành suốt cả cuộc đời — không phải vì ai yêu cầu, mà vì Người hiểu đạo đức chỉ có giá trị khi được thực hành thật sự mỗi ngày.`;
+      result.classList.add("show");
+    });
+    pillsEl.appendChild(btn);
+  });
+}
+function copyPledge(){
+  if(!chosenPledgeText) return;
+  navigator.clipboard.writeText(chosenPledgeText+" | Tư tưởng Hồ Chí Minh · FPT University").then(()=>{
+    const btn=document.querySelector(".share-btn");
+    if(btn){btn.textContent="✓ Đã sao chép!";setTimeout(()=>{btn.textContent="📋 Sao chép cam kết";},2000);}
+  });
+}
+
+/* ════════════════════════════════════
+   REVEAL ON SCROLL
+════════════════════════════════════ */
+function initReveal(){
+  const obs=new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){e.target.classList.add("visible");obs.unobserve(e.target);}
+    });
+  },{threshold:0.07});
+  document.querySelectorAll(".reveal").forEach(el=>obs.observe(el));
+}
+
+/* ════════════════════════════════════
+   INIT
+════════════════════════════════════ */
+document.addEventListener("DOMContentLoaded",()=>{
+  buildTimeline();
+  buildVirtues();
+  buildSituations();
+  buildQuiz();
+  buildMirror();
+  buildPledge();
+  setTimeout(initReveal,120);
+});
+</script>
+</body>
+</html>
